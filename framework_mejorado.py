@@ -5,9 +5,8 @@ Convertido desde framework_mejorado.ipynb
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score, log_loss, classification_report, confusion_matrix
-from sklearn.metrics import roc_auc_score, average_precision_score, roc_curve, precision_recall_curve
+from sklearn.metrics import accuracy_score, log_loss, classification_report
+from sklearn.metrics import roc_auc_score, average_precision_score
 from sklearn.ensemble import RandomForestClassifier
 from graphs import plot_confusion_matrix, plot_coefficients
 
