@@ -158,12 +158,13 @@ def gradient_descent(X, y, weights, bias, learning_rate):
 	
 	return weights, bias
 
-def train_log_regression(X_train, y_train, X_test, y_test, learning_rate, epochs):
+def train_log_regression(X_train, y_train, X_val, y_val, X_test, y_test, learning_rate, epochs):
 	"""
 	Entrena el modelo de regresión logística simple.
 	
 	Args:
 		X_train, y_train: Variables de entrenamiento
+		X_val, y_val: Variables de validación
 		X_test, y_test: Variables de prueba
 		learning_rate: Tasa de aprendizaje
 		epochs: Número de épocas
@@ -177,31 +178,44 @@ def train_log_regression(X_train, y_train, X_test, y_test, learning_rate, epochs
 	weights = np.zeros(num_features)
 	bias = 0.0
 	train_losses = []
+	val_losses = []
 	test_losses = []
 	train_accuracies = []
+	val_accuracies = []
 	test_accuracies = []
 	
 	for epoch in range(1, epochs + 1):
 		# Forward pass
 		y_train_pred = hypothesis(X_train, weights, bias)
+		y_val_pred = hypothesis(X_val, weights, bias)
 		y_test_pred = hypothesis(X_test, weights, bias)
+		
 		# Calcular error (loss)
 		train_loss = cross_entropy(y_train, y_train_pred)
+		val_loss = cross_entropy(y_val, y_val_pred)
 		test_loss = cross_entropy(y_test, y_test_pred)
+		
 		# Calcular precisión (accuracy)
 		train_acc = accuracy(y_train, y_train_pred)
+		val_acc = accuracy(y_val, y_val_pred)
 		test_acc = accuracy(y_test, y_test_pred)
+		
 		# Guardar métricas
 		train_losses.append(train_loss)
+		val_losses.append(val_loss)
 		test_losses.append(test_loss)
 		train_accuracies.append(train_acc)
+		val_accuracies.append(val_acc)
 		test_accuracies.append(test_acc)
+		
 		# Imprimir métricas cada época
-		print(f"Época {epoch}: Train Loss={train_loss:.8f}, Test Loss={test_loss:.8f}, Train Acc={train_acc:.4f}, Test Acc={test_acc:.4f}")
-		# Parar si el error es 0
-		if train_loss == 0:
-			print(f"Entrenamiento detenido en la época {epoch} porque el error de entrenamiento es 0.")
+		print(f"Época {epoch}: Train L={train_loss:.4f}, Val L={val_loss:.4f}, Test L={test_loss:.4f}, Train Ac={train_acc:.4f}, Val Ac={val_acc:.4f}, Test Ac={test_acc:.4f}")
+		
+		# Parar si el error es muy cercano a 0
+		if train_loss < 1e-4:
+			print(f"Entrenamiento detenido en la época {epoch} porque el error de entrenamiento es {train_loss:.4f}.")
 			break
+			
 		# Aplicar función de optimización
 		weights, bias = gradient_descent(X_train, y_train, weights, bias, learning_rate)
 	
@@ -212,9 +226,31 @@ def train_log_regression(X_train, y_train, X_test, y_test, learning_rate, epochs
 	# Crear historial para graficar
 	history = {
 		'train_losses': train_losses,
+		'val_losses': val_losses,
 		'test_losses': test_losses,
 		'train_accuracies': train_accuracies,
+		'val_accuracies': val_accuracies,
 		'test_accuracies': test_accuracies
 	}
 	
 	return weights, bias, history
+
+def one_hot_encode(column):
+    """
+    Aplica one-hot encoding a una columna de valores categóricos usando solo NumPy.
+    Siempre elimina la primera categoría para evitar multicolinealidad (n-1 categorías).
+
+    Parámetros:
+        column (np.array): arreglo 1D de valores categóricos.
+
+    Retorna:
+        np.array: matriz 2D con one-hot encoding (n-1 categorías).
+        list: lista de categorías codificadas (sin la primera).
+    """
+    categories = np.unique(column)
+    encoding_categories = categories[1:]
+    one_hot = np.zeros((len(column), len(categories) - 1), dtype=int)
+    for idx, category in enumerate(encoding_categories):
+        one_hot[:, idx] = (column == category).astype(int)
+
+    return one_hot, encoding_categories

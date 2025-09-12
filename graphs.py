@@ -1,24 +1,28 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot_performance(train_losses, test_losses, train_accuracies, test_accuracies):
-    """Curvas de loss y accuracy para train y test."""
+def plot_performance(train_losses, val_losses, test_losses, train_accuracies, val_accuracies, test_accuracies):
+    """Curvas de loss y accuracy para train, validación y test."""
     plt.figure(figsize=(10, 5))
-    plt.plot(train_losses, label="Train Loss")
-    plt.plot(test_losses, label="Test Loss")
+    plt.plot(train_losses, label="Train Loss", color='blue')
+    plt.plot(val_losses, label="Validation Loss", color='green')
+    plt.plot(test_losses, label="Test Loss", color='red')
     plt.xlabel("Época")
     plt.ylabel("Loss")
     plt.title("Curva de error (Loss)")
     plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.7)
     plt.show()
     
     plt.figure(figsize=(10, 5))
-    plt.plot(train_accuracies, label="Train Accuracy")
-    plt.plot(test_accuracies, label="Test Accuracy")
+    plt.plot(train_accuracies, label="Train Accuracy", color='blue')
+    plt.plot(val_accuracies, label="Validation Accuracy", color='green')
+    plt.plot(test_accuracies, label="Test Accuracy", color='red')
     plt.xlabel("Época")
     plt.ylabel("Accuracy")
     plt.title("Curva de accuracy")
     plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.7)
     plt.show()
 
 def plot_confusion_matrix(y_true, y_pred):
