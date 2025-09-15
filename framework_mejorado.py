@@ -69,14 +69,11 @@ def main():
     # 7. Crear y entrenar el modelo Random Forest
     print("\n7. Creando y entrenando el modelo Random Forest...")
     rf = RandomForestClassifier(
-        max_depth=30,           # Niveles
-        n_estimators=500,       # Número de árboles en el bosque
-        max_leaf_nodes=5,       # Número máximo de nodos por árbol
-        min_samples_split=2,    # Mínimo de muestras para dividir un nodo
-        min_samples_leaf=1,     # Mínimo de muestras en una hoja
-        n_jobs=-1,              # Usar todos los procesadores disponibles
-        random_state=42,
-        class_weight='balanced' # Manejar el desbalance de clases
+        class_weight='balanced',
+        n_estimators=500,
+        max_depth=10,
+        min_samples_leaf=6,
+        random_state=42
     )
     
     # Entrenar el modelo

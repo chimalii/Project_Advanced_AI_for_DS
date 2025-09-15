@@ -64,6 +64,10 @@ def plot_confusion_matrix(y_true, y_pred):
         [fn, tp]
     ])
 
+    # Accuracy por clase
+    acc_no_diabeticos = tn / (tn + fp) if (tn + fp) > 0 else 0
+    acc_diabeticos = tp / (tp + fn) if (tp + fn) > 0 else 0
+
     plt.figure(figsize=(4, 4))
     plt.imshow(confusion_matrix, cmap="Blues")
     plt.title("Matriz de confusión")
@@ -75,6 +79,10 @@ def plot_confusion_matrix(y_true, y_pred):
         for j in range(2):
             plt.text(j, i, str(confusion_matrix[i, j]), 
                     ha="center", va="center", color="black", fontsize=16)
+
+    print(f"* Accuracy No Diabéticos (Clase 0): {(acc_no_diabeticos*100):.2f}%")
+    print(f"* Accuracy Diabéticos (Clase 1): {(acc_diabeticos*100):.2f}%")
+    print(f" [{tn} {fp}]\n [{fn} {tp}]")
     plt.colorbar()
     plt.show()
     

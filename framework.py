@@ -66,9 +66,9 @@ def main():
     X_train, X_val, X_test = X[train_idx], X[val_idx], X[test_idx]
     y_train, y_val, y_test = y[train_idx], y[val_idx], y[test_idx]
     
-    # 7. Crear y entrenar el modelo Random Forest con parámetros default y balanceo
+    # 7. Crear y entrenar el modelo Random Forest con parámetros default
     print("\n7. Creando y entrenando el modelo Random Forest...")
-    rf = RandomForestClassifier(random_state=42, class_weight="balanced")
+    rf = RandomForestClassifier(random_state=42)
     
     # Entrenar el modelo
     rf.fit(X_train, y_train)
