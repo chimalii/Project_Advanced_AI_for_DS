@@ -1,12 +1,27 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve, auc
 
-def plot_performance(train_losses, val_losses, test_losses, train_accuracies, val_accuracies, test_accuracies):
-    """Curvas de loss y accuracy para train, validación y test."""
+
+def plot_performance(
+        train_losses, val_losses, test_losses, train_accuracies, 
+        val_accuracies, test_accuracies, overfit_epochs=None):
+    """
+    Curvas de loss y accuracy para train, validación y test. 
+    Marca sobreajuste si se indica.
+    """
     plt.figure(figsize=(10, 5))
     plt.plot(train_losses, label="Train Loss", color='blue')
     plt.plot(val_losses, label="Validation Loss", color='green')
     plt.plot(test_losses, label="Test Loss", color='red')
+    if overfit_epochs:
+        for epoch in overfit_epochs:
+            plt.axvline(
+                x=epoch-1, 
+                color='orange', 
+                linestyle='--', 
+                alpha=0.7, 
+                label='Overfitting Warning' if epoch == overfit_epochs[0] else None)
     plt.xlabel("Época")
     plt.ylabel("Loss")
     plt.title("Curva de error (Loss)")
@@ -18,6 +33,14 @@ def plot_performance(train_losses, val_losses, test_losses, train_accuracies, va
     plt.plot(train_accuracies, label="Train Accuracy", color='blue')
     plt.plot(val_accuracies, label="Validation Accuracy", color='green')
     plt.plot(test_accuracies, label="Test Accuracy", color='red')
+    if overfit_epochs:
+        for epoch in overfit_epochs:
+            plt.axvline(
+                x=epoch-1, 
+                color='orange', 
+                linestyle='--', 
+                alpha=0.7, 
+                label='Overfitting Warning' if epoch == overfit_epochs[0] else None)
     plt.xlabel("Época")
     plt.ylabel("Accuracy")
     plt.title("Curva de accuracy")
@@ -71,4 +94,25 @@ def plot_coefficients(coefficients, feature_names):
     plt.title('Impacto de cada variable en la predicción de prediabetes/diabetes')
     plt.axvline(x=0, color='gray', linestyle='--')
     plt.tight_layout()
+    plt.show()
+
+def plot_roc_curve(y_true, y_proba):
+    """
+    Grafica la curva ROC y muestra el valor AUC.
+    Args:
+        y_true: Etiquetas verdaderas (0 o 1)
+        y_proba: Probabilidades predichas para la clase positiva
+    """
+    fpr, tpr, _ = roc_curve(y_true, y_proba)
+    roc_auc = auc(fpr, tpr)
+    plt.figure(figsize=(6, 6))
+    plt.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {roc_auc:.4f})')
+    plt.plot([0, 1], [0, 1], color='gray', lw=1, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Curva ROC')
+    plt.legend(loc="lower right")
+    plt.grid(True, linestyle='--', alpha=0.7)
     plt.show()
